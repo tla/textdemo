@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Text Transforms</title>
+    <style>
+      .button {
+        border: 0.5px solid gray;
+        padding: 3px;
+        width: 100px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .button:hover {
+        cursor: pointer;
+      }
+      textarea {
+        padding: 10px;
+        font-family: courier;
+        font-size: 80%;
+        width: 400px;
+        height: 200px;
+      }
+      iframe {
+        border: 0.5px solid gray;
+        padding: 10px;
+        width: 400px;
+        height: 200px;
+      }
+    </style>
+    <script type="text/javascript">
+        // Module/name space TextTransformers
+        var TextTransformers = TextTransformers || {
+          TxtToHtmlTransformer: function() {
+            this.transform = function( txt ) {
+              return '<p style="font-style: italic;">' + txt.replace( 'pure', '<b>pure</b>' ) + '</p>';
+            }
+          },
+          HtmlToXmlTransformer: function() {
+            this.transform = function( html ) {
+              var xml = html.replace( /\<p[^\>]*\>/, '<par>' );
+              xml = xml.replace( /\<\/p\>/, '</par>' );
+              xml = xml.replace( /\<b\>/, '</emph>' );
+              xml = xml.replace( /\<\/b\>/, '</emph>' );
+              return xml;
+            }
+          },
+          set_iframe_content: function( iframe_id, content ) {
+            var iframe = gEBI( iframe_id );
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write( content );
+            iframe.contentWindow.document.close();
+          }
+        }
+
+        // Code in global name space
+        gEBI = function( id ) { return document.getElementById( id ) };
+
+        window.onload = function() {
+          TextTransformers.set_iframe_content( 'iframe_txt', gEBI( 'txt' ).value );
+          gEBI( 'to_html' ).addEventListener( 'click', function() {
+            var transformer = new TextTransformers.TxtToHtmlTransformer();
+            gEBI( 'html' ).value = transformer.transform( gEBI( 'txt' ).value );
+            TextTransformers.set_iframe_content( 'iframe_html', gEBI( 'html' ).value );
+          } );
+          gEBI( 'to_xml' ).addEventListener( 'click', function() {
+            var transformer = new TextTransformers.HtmlToXmlTransformer();
+            gEBI( 'xml' ).value = transformer.transform( gEBI( 'html' ).value );
+            TextTransformers.set_iframe_content( 'iframe_xml', gEBI( 'xml' ).value );
+          } );
+        };
+    </script>
+</head>
+
+<body>
+    <p>.txt -&gt; HTML -&gt; Shared Canvas JSON -&gt; TEI -&gt; Graph -&gt; HTML</p>
+    <textarea id="txt">this is less about the market and more about the pure politics side of it</textarea>
+    <iframe id="iframe_txt"></iframe>
+    <div id="to_html" class="button">text to html</div>
+    <textarea id="html"></textarea>
+    <iframe id="iframe_html"></iframe>
+    <div id="to_xml" class="button">html to xml</div>
+    <textarea id="xml"></textarea>
+    <iframe id="iframe_xml"></iframe>
+    <!--div id="to_json" class="button">xml to json</div-->
+</body>
+
+</html>
