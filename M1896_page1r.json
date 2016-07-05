@@ -1,0 +1,525 @@
+{
+  "@context" : "http://www.shared-canvas.org/ns/context.json",
+  "@id" : "http://t-pen.org/M1896+%28A%29/manifest.json",
+  "@type" : "sc:Manifest",
+  "label" : "M1896 (A)",
+  "sequences" : [ {
+    "@id" : "http://t-pen.org/M1896+%28A%29/sequence/normal",
+    "@type" : "sc:Sequence",
+    "label" : "Current Page Order",
+    "canvases" : [ {
+      "@id" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg",
+      "@type" : "sc:Canvas",
+      "label" : "page_001r.jpg",
+      "height" : 1000,
+      "width" : 666,
+      "resources" : [ {
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@id" : "http://t-pen.org/TPEN/imageResize?folioNum=12871255&height=1000",
+          "@type" : "dctypes:Image",
+          "format" : "image/jpeg",
+          "height" : 2000,
+          "width" : 1333
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/100304244",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "Պատմագրու<abbr>թի</abbr> արարեալ."
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,352,187,27"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252738",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "մատթէոսի մեծի <abbr>քհնյ</abbr>ի Ուրհայե"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,379,187,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252739",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ցւոյ։ <abbr>Վս</abbr> բագրատուն<abbr>եց</abbr> <abbr>թգր</abbr>ացն "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,399,197,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252740",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "Եւ այլոց բազմաց. ի <num value=\"400\">դճ</num> թվա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,418,187,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252741",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "կանէն սկսեալ. Մինչ ի <num value=\"611\">ո և ի "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,438,187,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252742",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ժա</num> թվան աւարտեալ։ "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,455,187,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252743",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "<hi rend=\"capital\">Ի</hi> <abbr>սբյ</abbr>ն գրիգորէ մեր լու"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,472,187,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252744",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "սաւորչէն. մինչև ի <abbr>սբ</abbr>ն"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,492,194,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252745",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ի սահակ հայ<abbr>ր<g>պտ</g></abbr>ն. ի կեսարի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,511,196,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252746",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "այ ծեռնադրէ ին կաթուղի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,530,199,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252747",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "կոսունքն հայոց։ Իսկ <abbr>յրժմ</abbr> ե֊"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,550,194,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252748",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ղև ժողովն քաղկեդօնի. բաժա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,569,194,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252749",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "նեցան հայր ի յունաց. և հաս"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,588,187,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252750",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "տատեցին ի դըւին զաթոռ "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,608,187,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252751",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "կաթու<abbr>ղկս</abbr>արանին։Զի զյովսէփ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,625,199,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252752",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "և զգիւտ անդ ծեռնադրեցին։"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,644,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252753",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "Եւ անտի փոխեցաւ ի յանի։ մին"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,663,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252754",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "չև ի <abbr><g>պտ</g>րս</abbr> հայ<abbr>ր<g>պտ</g></abbr>ն. որ գնաց ի բիւ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,682,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252755",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "զանդիայ. և եկն ի սեբաստիայ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,701,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252756",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "նստաւ. և անդ փոխեցաւ ի <abbr>քս</abbr>."
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,720,187,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252757",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "Եւ յետ <abbr>նր</abbr> խաչիկն քուեր որդի "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,737,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252758",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "<abbr>նր</abbr> յաջորդեաց զաթոռ <abbr>նր</abbr>։ Եւ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,756,187,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252759",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "յետ <abbr>նր</abbr> ազգն յունաց հակառա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,775,196,22"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/100304266",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "կու<abbr>թբ</abbr>. խափանեցին զկաթուղի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,178,193,29"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252760",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "կոսու<abbr>թի</abbr>ն հայոց. ամս <num value=\"10\">ժ</num> մինչև"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,207,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252761",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ցգագիկ։ Որ էր տեղեաւ ի վա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,227,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252762",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "նանդայ կարուց, որ է ղարս. որ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,247,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252763",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "տուեալ էր ղսեփհական երկիրն. և "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,266,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252764",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "զքաղաքն իւր յունաց. և առեալ "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,286,200,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252765",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "գոխարէն զմեծն կեսարիայ։ Սա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,306,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252766",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "բ<abbr>զւ</abbr>մ կաշառօք հաւանեցուց"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,325,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252767",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "զազգն յունաց։ և ծեռնադր<abbr>եց</abbr>"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,344,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252768",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "զվահրամ որ է վկայասէրն <abbr>գրգր</abbr>։"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,364,203,16"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252769",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ի թաւաբլուրն։ Յայնմ ժա<abbr>մկ</abbr>ի "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,380,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252770",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "բաժանեցաւ կ<abbr>թղկ</abbr>սու<abbr>թի</abbr>ն ի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,397,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252771",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "բ<abbr>զմ</abbr>ս. Եւ յետ վկայասիրին գրիգո"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,417,200,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252772",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "րիս եղբայրն ներսէսի կլայեցւոյն."
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,434,210,22"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252773",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "Նստաւ ի կարմիր վանքն։ Եւ նա"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,456,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252774",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "յաջորդեաց ի հռոմկլայն. Եւ յետ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,473,199,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252775",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "<abbr>նր</abbr> ներսէս. և այլք մինչ ի յոհաննէս,"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,492,212,22"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252776",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "որ անդ նստան։ Եւ յայնմ ժ<abbr>մն</abbr>կի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,514,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252777",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "դաւիթ անուն ոմն ծեռնադրե"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,531,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252778",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ցաւ ի սիս. մինչև ի ստեփանոս, որ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,550,197,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252779",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "գերեցաւ յեգիպտոս։ և դ<abbr>րձ</abbr>լ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,570,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252780",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "եկն ի սիս և անդ նստաւ. և այլքն"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,590,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252781",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "որ զկնի անդ ի սիս ձեռնադրէին."
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,610,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252782",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "և անդ նստէին. <abbr>մչ</abbr>եւ ցթումայ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,629,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252783",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "վ<abbr>դպ</abbr>ն մեծոփայ. Յձ բաժանեալ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,648,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252784",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "<abbr>նր</abbr> եղև աթոռն սահմանեալ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,668,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252785",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "յէջմիածին. Եւ բունն ոչ եղև "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,685,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252786",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "խափան<abbr>ել</abbr>. զի դեռևս կեն<abbr>դն</abbr>ի"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,705,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252787",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "էր կ<abbr>թղկ</abbr>սն սըսայ։զի ի լուսաւ"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,722,193,20"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252788",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "որչէն մինչև ի նա էր հաս<abbr>ել</abbr> կ<abbr>թղկ</abbr>ս"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,742,193,17"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252789",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ու<abbr>թի</abbr>ն։ Եւ նա ոչ եղև կամակից "
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,759,193,19"
+      }, {
+        "@id" : "http://t-pen.org/M1896+%28A%29/line/101252790",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ձեռնադր<abbr>լյ</abbr> կ<abbr>թղկ</abbr>ս յէջմիածին։"
+        },
+        "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=329,778,193,24"
+      } ]
+    } ]
+  } ]
+}
