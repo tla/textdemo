@@ -3,32 +3,10 @@
 
 <head>
     <title>Text Transforms</title>
-    <style>
-      .button {
-        border: 0.5px solid gray;
-        padding: 3px;
-        width: 100px;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .button:hover {
-        cursor: pointer;
-      }
-      textarea {
-        padding: 10px;
-        font-family: courier;
-        font-size: 80%;
-        width: 400px;
-        height: 200px;
-      }
-      iframe {
-        border: 0.5px solid gray;
-        padding: 10px;
-        width: 400px;
-        height: 200px;
-      }
-    </style>
+    <link rel="stylesheet" href="css/textdemo.css">
+    <script src="js/scrollx.js" type="text/javascript"></script>
     <script type="text/javascript">
+
         // Module/name space TextTransformers
         var TextTransformers = TextTransformers || {
           TxtToHtmlTransformer: function() {
@@ -59,30 +37,51 @@
         window.onload = function() {
           TextTransformers.set_iframe_content( 'iframe_txt', gEBI( 'txt' ).value );
           gEBI( 'to_html' ).addEventListener( 'click', function() {
+            //var rect = gEBI( 'demo_panel_003' ).getBoundingClientRect();
+            // console.log( rect );
+            // var rect = gEBI( 'demo_panel_002' ).getBoundingClientRect();
+            // console.log( rect );
+            // rect = gEBI( 'demo_panel_002' ).getBoundingClientRect();
+            scrollToX( document.getElementById( 'demo_panel_002' ).offsetLeft, 500, 'easeInOutQuint' );
+
+            var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
+            scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.TxtToHtmlTransformer();
             gEBI( 'html' ).value = transformer.transform( gEBI( 'txt' ).value );
             TextTransformers.set_iframe_content( 'iframe_html', gEBI( 'html' ).value );
           } );
           gEBI( 'to_xml' ).addEventListener( 'click', function() {
+            var left_x = gEBI( 'demo_panel_003' ).offsetLeft;
+            scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.HtmlToXmlTransformer();
             gEBI( 'xml' ).value = transformer.transform( gEBI( 'html' ).value );
             TextTransformers.set_iframe_content( 'iframe_xml', gEBI( 'xml' ).value );
           } );
+          gEBI( 'back_to_html' ).addEventListener( 'click', function() {
+            var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
+            scrollToX( left_x, 500, 'easeInOutQuint' );
+          } );
         };
     </script>
 </head>
-
 <body>
-    <p>.txt -&gt; HTML -&gt; Shared Canvas JSON -&gt; TEI -&gt; Graph -&gt; HTML</p>
-    <textarea id="txt">this is less about the market and more about the pure politics side of it</textarea>
-    <iframe id="iframe_txt"></iframe>
-    <div id="to_html" class="button">text to html</div>
-    <textarea id="html"></textarea>
-    <iframe id="iframe_html"></iframe>
-    <div id="to_xml" class="button">html to xml</div>
-    <textarea id="xml"></textarea>
-    <iframe id="iframe_xml"></iframe>
-    <!--div id="to_json" class="button">xml to json</div-->
+    <div id="demo_panels">
+      <div id="demo_panel_001" class="demo_panel">
+        <p>.txt -&gt; HTML -&gt; Shared Canvas JSON -&gt; TEI -&gt; Graph -&gt; HTML</p>
+        <textarea id="txt">this is less about the market and more about the pure politics side of it</textarea>
+        <iframe id="iframe_txt"></iframe>
+        <div id="to_html" class="button">text to html</div>
+      </div>
+      <div id="demo_panel_002" class="demo_panel">
+        <textarea id="html"></textarea>
+        <iframe id="iframe_html"></iframe>
+        <div id="to_xml" class="button">html to xml</div>
+      </div>
+      <div id="demo_panel_003" class="demo_panel">
+        <textarea id="xml"></textarea>
+        <iframe id="iframe_xml"></iframe>
+        <div id="back_to_html" class="button">back</div>
+      </div>
+    </div>
 </body>
-
 </html>
