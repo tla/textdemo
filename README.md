@@ -16,6 +16,7 @@ Then, assuming the above recipe has been followed:
 2. Install the following dependencies in reveal.js/decks/textdemo/js/dependencies:
  * dagre.min.js from https://github.com/cpettitt/dagre/tree/master/dist
  * dagre-d3.min.js from https://github.com/cpettitt/dagre-d3/tree/master/dist
-3. Travel to localhost_or_domain:8000/decks/textdemo
+3. Fire up node.js (npm start) in the reveal.js directory
+4. Point your browser to localhost_or_domain:8000/decks/textdemo
 
 --
