@@ -35,6 +35,8 @@
         gEBI = function( id ) { return document.getElementById( id ) };
 
         window.onload = function() {
+          // Next will not work with IE, but I don't care about IE.
+          if( self==top ){ console.log( 'yes' ); gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
           TextTransformers.set_iframe_content( 'iframe_txt', gEBI( 'txt' ).value );
           gEBI( 'to_html' ).addEventListener( 'click', function() {
             //var rect = gEBI( 'demo_panel_003' ).getBoundingClientRect();
