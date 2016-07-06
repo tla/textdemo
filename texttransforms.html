@@ -22,8 +22,31 @@
             }
           },
           JsonToTeiTransformer: function() {
-            this.transform = function( txt ) {
-              return '<p style="font-style: italic;">' + txt.replace( 'pure', '<b>pure</b>' ) + '</p>';
+            this.transform = function( json_string ) {
+              var json = JSON.parse( json_string );
+              var columns = [];
+              var x_val = 0;
+              json.sequences[0].canvases[0].resources.forEach( function( item ) {
+                if( item.resource['@type'] == 'cnt:ContentAsText' ) {
+                  if( x_val < parseInt( item.on.match( /^.*#xywh=-?(\d+)/ )[1] ) ) {
+                    columns.push( [] );
+                    x_val = parseInt( item.on.match( /^.*#xywh=-?(\d+)/ )[1] )
+                  };
+                  var lineid = item['@id'].match( /^.*line\/(\d+)$/ )[1];
+                  columns[ columns.length - 1 ].push( [ lineid, item.resource['cnt:chars'] ] );
+                }
+              } );
+              var xmlstring = '';
+              columns.forEach( function( column, cn ) {
+                xmlstring += '<cb n="' + ( cn + 1 ) + '"/>\n';
+                column.forEach( function( line, ln ) {
+                  xmlstring += '<lb xml:id="l' + line[0] + '" n="' + ( ln  + 1 ) + '"/>' + line[1] + '\n';
+                } );
+              } );
+              var frontmatter = '<TEIversion="5.0"xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>DocTitle</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>Source description</p></sourceDesc></fileDesc></teiHeader><text>';
+              var backmatter = '</text></TEI>';
+              var xmlDoc = frontmatter+ '<body><ab>' + xmlstring + '</ab></body>' + backmatter;
+              return xmlDoc;
             }
           },
           HtmlToXmlTransformer: function() {
@@ -55,7 +78,6 @@
           if( self==top ){ gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
           json = new JSON_MODULE();
           json.getExampleJSON( function( json_data ) {
-            console.log( json_data );
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
             JsonToHtmlTransformer = new TextTransformers.JsonToHtmlTransformer();
             TextTransformers.set_iframe_content( 'iframe_json', JsonToHtmlTransformer.transform( json_data ) );
