@@ -10,7 +10,18 @@
 
         // Module/name space TextTransformers
         var TextTransformers = TextTransformers || {
-          TxtToHtmlTransformer: function() {
+          JsonToHtmlTransformer: function() {
+            this.transform = function( json ) {
+              var html = '';
+              json.sequences[0].canvases[0].resources.forEach( function( item ) {
+                if( item.resource['@type'] == 'cnt:ContentAsText' ) {
+                  html += '<p>' + item.resource['cnt:chars'] + '</p>'
+                }
+              } );
+              return html;
+            }
+          },
+          JsonToTeiTransformer: function() {
             this.transform = function( txt ) {
               return '<p style="font-style: italic;">' + txt.replace( 'pure', '<b>pure</b>' ) + '</p>';
             }
@@ -44,12 +55,15 @@
           if( self==top ){ gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
           json = new JSON_MODULE();
           json.getExampleJSON( function( json_data ) {
+            console.log( json_data );
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
+            JsonToHtmlTransformer = new TextTransformers.JsonToHtmlTransformer();
+            TextTransformers.set_iframe_content( 'iframe_json', JsonToHtmlTransformer.transform( json_data ) );
           } );
           gEBI( 'to_tei' ).addEventListener( 'click', function() {
             var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
-            var transformer = new TextTransformers.TxtToHtmlTransformer();
+            var transformer = new TextTransformers.JsonToTeiTransformer();
             gEBI( 'tei' ).value = transformer.transform( gEBI( 'json' ).value );
             TextTransformers.set_iframe_content( 'iframe_tei', gEBI( 'tei' ).value );
           } );
