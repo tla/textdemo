@@ -5,6 +5,7 @@
     <title>Text Transforms</title>
     <link rel="stylesheet" href="css/textdemo.css">
     <script src="js/scrollx.js" type="text/javascript"></script>
+    <script src="js/json_module.js" type="text/javascript"></script>
     <script type="text/javascript">
 
         // Module/name space TextTransformers
@@ -23,6 +24,10 @@
               return xml;
             }
           },
+          set_textarea_content: function( textarea_id, content ) {
+            var textarea = gEBI( textarea_id );
+            textarea.value = content;
+          },
           set_iframe_content: function( iframe_id, content ) {
             var iframe = gEBI( iframe_id );
             iframe.contentWindow.document.open();
@@ -36,9 +41,12 @@
 
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
-          if( self==top ){ console.log( 'yes' ); gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
-          TextTransformers.set_iframe_content( 'iframe_txt', gEBI( 'txt' ).value );
-          gEBI( 'to_html' ).addEventListener( 'click', function() {
+          if( self==top ){ gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
+          json = new JSON_MODULE();
+          json.getExampleJSON( function( json_data ) {
+            TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
+          } );
+          gEBI( 'to_tei' ).addEventListener( 'click', function() {
             //var rect = gEBI( 'demo_panel_003' ).getBoundingClientRect();
             // console.log( rect );
             // var rect = gEBI( 'demo_panel_002' ).getBoundingClientRect();
@@ -49,17 +57,17 @@
             var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.TxtToHtmlTransformer();
-            gEBI( 'html' ).value = transformer.transform( gEBI( 'txt' ).value );
-            TextTransformers.set_iframe_content( 'iframe_html', gEBI( 'html' ).value );
+            gEBI( 'tei' ).value = transformer.transform( gEBI( 'json' ).value );
+            TextTransformers.set_iframe_content( 'iframe_tei', gEBI( 'tei' ).value );
           } );
-          gEBI( 'to_xml' ).addEventListener( 'click', function() {
+          gEBI( 'to_dot' ).addEventListener( 'click', function() {
             var left_x = gEBI( 'demo_panel_003' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.HtmlToXmlTransformer();
-            gEBI( 'xml' ).value = transformer.transform( gEBI( 'html' ).value );
-            TextTransformers.set_iframe_content( 'iframe_xml', gEBI( 'xml' ).value );
+            gEBI( 'dot' ).value = transformer.transform( gEBI( 'tei' ).value );
+            TextTransformers.set_iframe_content( 'iframe_dot', gEBI( 'dot' ).value );
           } );
-          gEBI( 'back_to_html' ).addEventListener( 'click', function() {
+          gEBI( 'back_to_tei' ).addEventListener( 'click', function() {
             var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
           } );
@@ -70,19 +78,19 @@
     <div id="demo_panels">
       <div id="demo_panel_001" class="demo_panel">
         <p>.txt -&gt; HTML -&gt; Shared Canvas JSON -&gt; TEI -&gt; Graph -&gt; HTML</p>
-        <textarea id="txt">this is less about the market and more about the pure politics side of it</textarea>
-        <iframe id="iframe_txt"></iframe>
-        <div id="to_html" class="button">text to html</div>
+        <textarea id="json"></textarea>
+        <iframe id="iframe_json"></iframe>
+        <div id="to_tei" class="button">json to tei</div>
       </div>
       <div id="demo_panel_002" class="demo_panel">
-        <textarea id="html"></textarea>
-        <iframe id="iframe_html"></iframe>
-        <div id="to_xml" class="button">html to xml</div>
+        <textarea id="tei"></textarea>
+        <iframe id="iframe_tei"></iframe>
+        <div id="to_dot" class="button">tei to .dot</div>
       </div>
       <div id="demo_panel_003" class="demo_panel">
-        <textarea id="xml"></textarea>
-        <iframe id="iframe_xml"></iframe>
-        <div id="back_to_html" class="button">back</div>
+        <textarea id="dot"></textarea>
+        <iframe id="iframe_dot"></iframe>
+        <div id="back_to_tei" class="button">back</div>
       </div>
     </div>
 </body>

@@ -2,13 +2,13 @@
 
 // first add raf shim
 // http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
+window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function(callback) {
             window.setTimeout(callback, 1000 / 60);
-          };
+        };
 })();
 
 // main function
@@ -29,13 +29,13 @@ function scrollToX(scrollTargetX, speed, easing) {
     // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
     var PI_D2 = Math.PI / 2,
         easingEquations = {
-            easeOutSine: function (pos) {
+            easeOutSine: function(pos) {
                 return Math.sin(pos * (Math.PI / 2));
             },
-            easeInOutSine: function (pos) {
+            easeInOutSine: function(pos) {
                 return (-0.5 * (Math.cos(Math.PI * pos) - 1));
             },
-            easeInOutQuint: function (pos) {
+            easeInOutQuint: function(pos) {
                 if ((pos /= 0.5) < 1) {
                     return 0.5 * Math.pow(pos, 5);
                 }
