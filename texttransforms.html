@@ -43,7 +43,7 @@
                   xmlstring += '<lb xml:id="l' + line[0] + '" n="' + ( ln  + 1 ) + '"/>' + line[1] + '\n';
                 } );
               } );
-              var frontmatter = '<TEIversion="5.0"xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>DocTitle</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>Source description</p></sourceDesc></fileDesc></teiHeader><text>';
+              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>DocTitle</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>Source description</p></sourceDesc></fileDesc></teiHeader><text>';
               var backmatter = '</text></TEI>';
               var xmlDoc = frontmatter+ '<body><ab>' + xmlstring + '</ab></body>' + backmatter;
               return xmlDoc;
