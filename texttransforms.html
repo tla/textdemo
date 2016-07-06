@@ -47,13 +47,6 @@
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
           } );
           gEBI( 'to_tei' ).addEventListener( 'click', function() {
-            //var rect = gEBI( 'demo_panel_003' ).getBoundingClientRect();
-            // console.log( rect );
-            // var rect = gEBI( 'demo_panel_002' ).getBoundingClientRect();
-            // console.log( rect );
-            // rect = gEBI( 'demo_panel_002' ).getBoundingClientRect();
-            scrollToX( document.getElementById( 'demo_panel_002' ).offsetLeft, 500, 'easeInOutQuint' );
-
             var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.TxtToHtmlTransformer();
