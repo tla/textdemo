@@ -11,24 +11,26 @@ html {
   position: relative;
   display: inline-block;
   padding-left: 2%;
-  border: 1px dotted lightgreen;
+  /* border: 1px dotted lightgreen; */
   vertical-align: top;
 }
 .button {
   border: 0.5px solid gray;
   padding: 3px;
-  width: 100px;
-  margin-bottom: 20px;
+  width: 200px;
+  margin-top: 20px;
   text-align: center;
+  margin: 20px auto 20px auto;
 }
 .button:hover {
   cursor: pointer;
+  background-color: #eee;
 }
 textarea {
   padding: 10px;
   font-family: courier;
   font-size: 80%;
-  width: 45%;
+  width: 47%;
   height: 80%;
 }
 iframe {
