@@ -39,3 +39,31 @@ iframe {
   width: 45%;
   height: 80%;
 }
+#svg_graph {
+  border: 0.5px solid gray;
+  padding: 10px;
+  width: 45%;
+  height: 80%;
+}
+
+/* SVG Graph/DAG specifics */
+g.type-TK > rect {
+  fill: #00ffd0;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #999;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+}
