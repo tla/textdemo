@@ -21,13 +21,14 @@ var SVG_MODULE = SVG_MODULE || function() {
     });
     svg.call(zoom);
     // Center the graph
-    console.log( 'cW: ' + svg.property( 'clientWidth' ) );
-    console.log( 'cH: ' + svg.property( 'clientHeight' ) );
-    console.log( 'gW: ' + g.graph().width );
-    console.log( 'gH: ' + g.graph().height );
-    var x_center_offset = ( svg.property( 'clientWidth' ) - g.graph().width ) / 2;
-    svgGroup.attr( 'transform', 'translate(' + x_center_offset + ', 20)' );
+    // var x_center_offset = ( svg.property( 'clientWidth' ) - g.graph().width ) / 2;
+    // svgGroup.attr( 'transform', 'translate(' + x_center_offset + ', 20)' );
     //svg.attr( 'height', g.graph().height + 40 );
+    var initialScale = 0.4;
+    zoom.translate( [ (svg.property( 'clientWidth' ) - g.graph().width * initialScale ) / 2, 20 ] )
+      .scale(initialScale)
+      .event(svg);
+    //svg.attr('height', g.graph().height * initialScale + 40);
   }
 
 } // END OF MODULE
