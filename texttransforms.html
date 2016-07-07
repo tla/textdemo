@@ -34,6 +34,8 @@
               var json = JSON.parse( json_string );
               var label = json['label'];
               var manifestId = json['@id'];
+              var resourceURL = manifestId.substr(0,
+              						manifestId.indexOf("manifest") );
               var columns = [];
               var last_x = 0;
               json.sequences[0].canvases[0].resources.forEach( function( item ) {
@@ -77,7 +79,7 @@
               // XML boilerplate
               var stylesheet_decl = '<?xml-stylesheet type="text/xsl" href="resources/tei_demo_doc.xsl"?>';
               // TEI header with SC label and manifest ID
-              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>' + label + '</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>' + manifestId + '</p></sourceDesc></fileDesc></teiHeader>';
+              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>' + label + '</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>' + resourceURL + '</p></sourceDesc></fileDesc></teiHeader>';
               // Facsimile element with canvas info
               var surfacefile = json.sequences[0].canvases[0].label
               var surfaceheight = json.sequences[0].canvases[0].height
@@ -291,37 +293,87 @@
           	this.transform = function( dot_string ) {
           		// Parse the dot into a Javascript object
           		var gr = graphlibDot.read( dot_string );
+          		// Get some main text properties
+          		var textnode = gr.node('TEXT');
+          		var facsnode = gr.node('facs');
+          		
+          		var baseurl = textnode['manifestID'];
+          		var imgfile = facsnode['label'];
           		
           		// Make an ordered(!) list of annotation resources
           		var order = function( a, b ) {
-          			if( a['x'] != b['x'] ) {
-          				return a['x'] < b['x'] ? -1 : 1;
-          			} else if ( a['y'] != b['y'] ) {
-          				return a['y'] < b['y'] ? -1 : 1;
+          			if( gr.node(a)['x'] != gr.node(b)['x'] ) {
+          				return gr.node(a)['x'] < gr.node(b)['x'] ? -1 : 1;
+          			} else if ( gr.node(a)['y'] != gr.node(b)['y'] ) {
+          				return gr.node(a)['y'] < gr.node(b)['y'] ? -1 : 1;
           			}
           			return 0;
           		}
           		var zones = gr.neighbors('facs').filter( function( el ) {
-          			return el['class'] === 'ZONE';
+          			return gr.node(el)['class'] === 'ZONE';
           		}).sort(order);
           		var resources = []
           		zones.forEach( function( z ) {
+          			var znode = gr.node(z);
+          			var lineid = z.substr(1);
           			var zoneobj = {
-          				'@id': `http://t-pen.org/${idurlesc}/line/${lineid}`,
+          				'@id': `${baseurl}line/${lineid}`,
           				'@type': 'oa:Annotation',
           				'motivation': 'sc:Painting',
           				'resource': { '@type': 'cnt:ContentAsText' },
-          				'on': `http://t-pen.org/${idurlesc}/canvas/${imgfile}/#xywh=${x},${y},${w},${h}`,
-          				
+          				'on': `${baseurl}canvas/${imgfile}/#xywh=${znode['x']},${znode['y']},${znode['w']},${znode['h']}`
           			};
           			// Now read and reinsert the text nodes
+          			var textnodes = gr.neighbors(z).filter( function( el ) {
+          				return gr.node(el)['class'] === 'TOKEN';
+          			}).sort( function( a, b ) {
+          				anum = a.substr(1);
+          				bnum = b.substr(1);
+          				return anum < bnum ? -1 : bnum > anum;
+          			});
+          			stringResult = '';
+          			textnodes.forEach( function (tn) {
+          				var tnode = gr.node(tn);
+          				var tokenText = '';
+          				// TODO Check to see if it has an annotation start
+          				// Spit out the string
+          				tokenText = tnode['label'];
+          				// Spit out a space unless joinNext is true
+          				if( !('joinNext' in tnode) ) {
+          					tokenText += ' ';
+          				}
+          				// Check to see if it has an annotation end
+          				stringResult += tokenText;
+          			});
+          			zoneobj['resource']['cnt:chars'] = stringResult;
+          			resources.push(zoneobj);
           		});
           		// Stick those in a canvas
+          		var canvases = [{
+          			'@id': `${baseurl}canvas/${imgfile}`,
+          			'@type': "sc:Canvas",
+          			'label': imgfile,
+          			'height': facsnode['h'],
+          			'width': facsnode['w'],
+          			'resources': resources
+          		}];
           		
           		// Stick that in a sequence
-          		
+          		var sequences = {
+          			'@id': `${baseurl}sequence/normal`,
+          			'@type': "sc:Sequence",
+          			'label': "Current Page Order",
+          			'canvases': canvases
+          		};
           		// Wrap the sequence in the outer object
-          		return "Not yet implemented!";
+          		var scjson = {
+          			'@context': 'http://www.shared-canvas.org/ns/context.json',
+          			'@id': baseurl + 'manifest.json',
+          			'@type': "sc:Manifest",
+          			'label': textnode['label'],
+          			'sequences': sequences
+          		};
+          		return JSON.stringify( scjson );
           	}
           },
           set_textarea_content: function( textarea_id, content ) {
