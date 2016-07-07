@@ -19,7 +19,7 @@
         "motivation" : "sc:painting",
         "resource" : {
           "@type" : "cnt:ContentAsText",
-          "cnt:chars" : "Պատմագրու<abbr>թի</abbr> արարեալ."
+          "cnt:chars" : "Պատմագրու<abbr>թի</abbr> արարեալ. "
         },
         "on" : "http://t-pen.org/M1896+%28A%29/canvas/page_001r.jpg#xywh=99,352,187,27"
       }, {

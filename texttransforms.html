@@ -113,10 +113,177 @@
               return xml;
             }
           },
-          TeiToDotTransformer: function() {
-            this.transform = function( tei ) {
-              return "not implemented yet!"
-            }
+          TeiToDotTransformer: function () {
+          	this.transform = function( xml_string ) {
+          	  // Parse the TEI string and set up XPath parsing
+          	  var nsres = function( pf ) {
+          	    if( pf === 't' ) {
+          	      return "http://www.tei-c.org/ns/1.0";
+          	    } else if ( pf === 'xml' ) {
+          	      return "http://www.w3.org/XML/1998/namespace";
+          	    } else {
+          	      return "";
+          	    }
+          	  };
+          	  parser = new DOMParser();
+          	  teiDoc = parser.parseFromString( xml_string, "text/xml" );
+          	  var byXpath = function(path, context) {
+          	    context = context || teiDoc;
+          	  	return teiDoc.evaluate(path, context, nsres,
+          	  		XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+          	  };
+          	  var setByXpath = function(path) {
+          	  	return teiDoc.evaluate(path, teiDoc, nsres,
+          	  		XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+          	  };
+          	  
+          	  // We will make simple objects for each node and edge
+          	  nodes = [];
+          	  edges = [];
+          	  // Main text node with label and manifest
+          	  nodes.push({
+          	    "id": "TEXT",
+          	    "class": "TEXT",
+          	    "label": byXpath('//t:titleStmt/t:title').textContent,
+          	    "manifestID": byXpath('//t:sourceDesc/t:p').textContent
+          	  });
+          	  // Make the facsimile and zone nodes with coordinates and ID
+          	  nodes.push({
+          	    "id": "facs",
+          	    "class": "FACSIMILE", 
+          	    "label": byXpath('//t:graphic/@url').textContent,
+          	    "h": byXpath('//t:surface/@lry').textContent,
+          	    "w": byXpath('//t:surface/@lrx').textContent
+          	  });
+          	  edges.push(["TEXT", "facs", "HAS_FACSIMILE"]);
+          	  var zones = setByXpath('//t:zone');
+          	  var nextZone = zones.iterateNext();
+          	  while( nextZone ) {
+          	    zx = parseInt(nextZone.attributes["ulx"].nodeValue);
+          	    zy = parseInt(nextZone.attributes["uly"].nodeValue);
+          	    zwid = parseInt(nextZone.attributes["lrx"].nodeValue) - zx;
+          	    zhgt = parseInt(nextZone.attributes["lry"].nodeValue) - zy;
+          	  	zoneNode = {
+          	  	  "id": nextZone.attributes["xml:id"].nodeValue,
+          	  	  "class": "ZONE",
+          	  	  "x": zx,
+          	  	  "y": zy,
+          	  	  "w": zwid,
+          	  	  "h": zhgt
+          	  	};
+          	  	nodes.push( zoneNode );
+          	  	edges.push(["facs", zoneNode['id'], 'HAS_ZONE']);
+          	  	nextZone = zones.iterateNext();
+          	  }
+          	  
+          	  // Set up our recursive function for stepping through the
+          	  // child elements of a node
+			  var currLine;
+			  var lastToken;
+			  var tidx = 0;
+			  var aidx = 0;
+          	  var newLine = false;
+          	  var stepThroughText = function( element ) {
+          	  	  var createdTokens = []
+				  element.childNodes.forEach( function( nextEl ) {
+					// If it's a lb, note ref for hooking up the correct zone
+					if( nextEl.nodeName === "lb" ) {
+					  // Close out the old line TODO
+					  if( lastToken && currLine ) {
+						edges.push([currLine, lastToken.id, 'UNTIL']);
+					  }
+					  // Note the new line
+					  currLine = nextEl.attributes['facs'].nodeValue.substr(1);
+					  newLine = true;
+
+					// If it's text, split it on space
+					} else if( nextEl.nodeType === nextEl.TEXT_NODE ) {
+						var tokens = nextEl.nodeValue.split(/\s+/);
+						var partialWord = true;
+						if( tokens[0] === "" ) {
+							// Remove the joinNext from the last token
+							if( lastToken ) {
+								delete lastToken['joinNext'];
+							}
+							tokens.shift();
+						}
+						if( tokens[tokens.length-1] === "" ) {
+							// See if the last token needs a joinNext
+							partialWord = false;
+							tokens.pop();
+						}
+						// Make the token nodes
+						tokens.forEach( function( token ) {
+							var tnode = {
+								"id": `t${tidx}`,
+								"class": 'TOKEN',
+								"label": token
+							};
+							tidx += 1;
+							nodes.push( tnode );
+							createdTokens.push( tnode );
+							if( lastToken ) {
+							  edges.push([lastToken.id, tnode.id, 'SEQUENCE']);
+							}
+							if( newLine ) {
+							  edges.push([currLine, tnode.id, 'TRANSCRIPTION']);
+							  newLine = false;
+							}
+							lastToken = tnode;
+						});
+						if( partialWord ) {
+							lastToken['joinNext'] = 'true';
+						}
+					
+					// If it's a cb, skip it
+					// If it's any element other than cb (which we skip), 
+					// get its contents and make an annotation. Need to 
+					// recurse on the text splitting for this.
+					} else if ( nextEl.nodeName != "cb" ) {
+						// Make an annotation node
+						var annoNode = {
+							'id': `a${aidx}`,
+							'class': 'ANNOTATION',
+							'label': nextEl.nodeName
+						};
+						for( var i = 0; i < nextEl.attributes.length; i++ ) {
+							var attr = nextEl.attributes[i];
+							annoNode[attr.nodeName] = attr.nodeValue;
+						}
+						aidx += 1;
+						var annoRange = stepThroughText( nextEl );
+						nodes.push( annoNode );
+						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
+						edges.push([annoNode.id, 
+									annoRange[annoRange.length-1].id, 'UNTIL']);
+					}
+			  	  });
+			  	return createdTokens;
+			  };
+          	  // Go through the child elements of the ab in order
+			  stepThroughText( byXpath( '//t:ab' ) );
+			  // Hook up the last line ending to the last token
+			  edges.push([currLine, lastToken.id, 'UNTIL']);
+
+          	  // Now output a dot string with the nodes and the edges
+          	  var dotString = 'digraph theText {\n'
+          	  nodes.forEach( function( node, idx ) {
+          	  	var nodeString = '  ' + node.id + ' [ ';
+          	  	Object.keys(node).forEach( function( key ) {
+          	  		if( key != 'id' ) {
+          	  			nodeString += `${key}="${node[key]}" `;
+          	  		}
+          	  	});
+          	  	nodeString += ']';
+          	  	dotString += nodeString + '\n';
+          	  });
+          	  edges.forEach( function( edge ) {
+          	  	var edgeString = `  ${edge[0]} -> ${edge[1]} [ name="${edge[2]}" ]`
+          	  	dotString += edgeString + '\n';
+          	  });
+          	  dotString += '}';
+          	  return dotString;
+          	}
           },
           set_textarea_content: function( textarea_id, content ) {
             var textarea = gEBI( textarea_id );
