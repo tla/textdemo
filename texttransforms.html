@@ -303,6 +303,9 @@
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
           if( self==top ){ gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
+          // Browsers tend to return to last scroll position, we need to wait for
+          // that to have happened or we still won't scroll back…
+          window.setTimeout( function() { window.scrollTo( 0, 0 ) }, 100 );
           // Ensure transition panel can ben clicked away
           var hide_transition_container = function() {
             transition_container.style.display = "none";
@@ -344,8 +347,12 @@
             showTransitionSlide( TextTransformers.TeiToDotTransformer );
             var transformer = new TextTransformers.TeiToDotTransformer();
             gEBI( 'dot' ).value = transformer.transform( gEBI( 'tei' ).value );
-            var svg_renderer = new SVG_MODULE();
-            svg_renderer.render_dot( gEBI( 'dot' ).value, '#svg_graph g' );
+            // A total hack to keep the graph rendering from preventing the
+            // transition slide to show…
+            window.setTimeout( function() {
+              var svg_renderer = new SVG_MODULE();
+              svg_renderer.render_dot( gEBI( 'dot' ).value, '#svg_graph g' );
+            }, 2000 );
           } );
           // Temporary: just here to prove we can go 'back'
           gEBI( 'back_to_tei' ).addEventListener( 'click', function() {
