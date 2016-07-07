@@ -136,7 +136,7 @@
           	  	return teiDoc.evaluate(path, teiDoc, nsres,
           	  		XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
           	  };
-          	  
+
           	  // We will make simple objects for each node and edge
           	  nodes = [];
           	  edges = [];
@@ -150,7 +150,7 @@
           	  // Make the facsimile and zone nodes with coordinates and ID
           	  nodes.push({
           	    "id": "facs",
-          	    "class": "FACSIMILE", 
+          	    "class": "FACSIMILE",
           	    "label": byXpath('//t:graphic/@url').textContent,
           	    "h": byXpath('//t:surface/@lry').textContent,
           	    "w": byXpath('//t:surface/@lrx').textContent
@@ -175,7 +175,7 @@
           	  	edges.push(["facs", zoneNode['id'], 'HAS_ZONE']);
           	  	nextZone = zones.iterateNext();
           	  }
-          	  
+
           	  // Set up our recursive function for stepping through the
           	  // child elements of a node
 			  var currLine;
@@ -234,10 +234,10 @@
 						if( partialWord ) {
 							lastToken['joinNext'] = 'true';
 						}
-					
+
 					// If it's a cb, skip it
-					// If it's any element other than cb (which we skip), 
-					// get its contents and make an annotation. Need to 
+					// If it's any element other than cb (which we skip),
+					// get its contents and make an annotation. Need to
 					// recurse on the text splitting for this.
 					} else if ( nextEl.nodeName != "cb" ) {
 						// Make an annotation node
@@ -254,7 +254,7 @@
 						var annoRange = stepThroughText( nextEl );
 						nodes.push( annoNode );
 						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
-						edges.push([annoNode.id, 
+						edges.push([annoNode.id,
 									annoRange[annoRange.length-1].id, 'UNTIL']);
 					}
 			  	  });
