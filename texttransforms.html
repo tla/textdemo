@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/textdemo.css">
     <script src="js/scrollx.js" type="text/javascript"></script>
     <script src="js/json_module.js" type="text/javascript"></script>
+    <script src="js/xsl_module.js" type="text/javascript"></script>
     <script type="text/javascript">
 
         // Module/name space TextTransformers
@@ -43,10 +44,26 @@
                   xmlstring += '<lb xml:id="l' + line[0] + '" n="' + ( ln  + 1 ) + '"/>' + line[1] + '\n';
                 } );
               } );
+              var stylesheet_decl = '<?xml-stylesheet type="text/xsl" href="resources/tei_demo_doc.xsl"?>';
               var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>DocTitle</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>Source description</p></sourceDesc></fileDesc></teiHeader><text>';
               var backmatter = '</text></TEI>';
-              var xmlDoc = frontmatter+ '<body><ab>' + xmlstring + '</ab></body>' + backmatter;
+              var xmlDoc = stylesheet_decl + '\n' + frontmatter+ '<body><ab>' + xmlstring + '</ab></body>' + backmatter;
               return xmlDoc;
+            }
+          },
+          TeiToHTMLTransformer: function() {
+            this.transform = function( tei, callback ) {
+              var xsl = new XSL_MODULE();
+              xsl.getXSL( function( stylesheet ) {
+                var xsltProcessor = new XSLTProcessor();
+                xsltProcessor.importStylesheet( stylesheet );
+                var parser = new DOMParser();
+                var xml_doc = parser.parseFromString( tei, "text/xml" );
+                var result_document = xsltProcessor.transformToFragment( xml_doc, document );
+                var serializer = new XMLSerializer();
+                var result_document_as_string = serializer.serializeToString( result_document );
+                callback( result_document_as_string );
+              } );
             }
           },
           HtmlToXmlTransformer: function() {
@@ -76,18 +93,21 @@
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
           if( self==top ){ gEBI( 'demo_panels' ).style.height = ( Math.floor( window.innerHeight * 0.97) ).toString() + 'px' };
-          json = new JSON_MODULE();
+          var json = new JSON_MODULE();
           json.getExampleJSON( function( json_data ) {
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
-            JsonToHtmlTransformer = new TextTransformers.JsonToHtmlTransformer();
-            TextTransformers.set_iframe_content( 'iframe_json', JsonToHtmlTransformer.transform( json_data ) );
+            var transformer = new TextTransformers.JsonToHtmlTransformer();
+            TextTransformers.set_iframe_content( 'iframe_json', transformer.transform( json_data ) );
           } );
           gEBI( 'to_tei' ).addEventListener( 'click', function() {
             var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
             var transformer = new TextTransformers.JsonToTeiTransformer();
             gEBI( 'tei' ).value = transformer.transform( gEBI( 'json' ).value );
-            TextTransformers.set_iframe_content( 'iframe_tei', gEBI( 'tei' ).value );
+            transformer = new TextTransformers.TeiToHTMLTransformer();
+            transformer.transform( gEBI( 'tei' ).value, function( tei_as_html ) {
+              TextTransformers.set_iframe_content( 'iframe_tei', tei_as_html );
+            } );
           } );
           gEBI( 'to_dot' ).addEventListener( 'click', function() {
             var left_x = gEBI( 'demo_panel_003' ).offsetLeft;
