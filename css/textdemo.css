@@ -1,10 +1,12 @@
 html {
   overflow-y: hidden;
 }
+
 #demo_panels {
   background-color: #fafafa;
   white-space: nowrap;
 }
+
 .demo_panel {
   width: 100%;
   height: 100%;
@@ -14,6 +16,7 @@ html {
   /* border: 1px dotted lightgreen; */
   vertical-align: top;
 }
+
 .button {
   border: 0.5px solid gray;
   padding: 3px;
@@ -22,10 +25,12 @@ html {
   text-align: center;
   margin: 20px auto 20px auto;
 }
+
 .button:hover {
   cursor: pointer;
   background-color: #eee;
 }
+
 textarea {
   padding: 10px;
   font-family: courier;
@@ -33,18 +38,48 @@ textarea {
   width: 47%;
   height: 80%;
 }
+
 iframe {
   border: 0.5px solid gray;
   padding: 10px;
   width: 45%;
   height: 80%;
 }
+
 #svg_graph {
   border: 0.5px solid gray;
   padding: 10px;
   width: 45%;
   height: 80%;
 }
+
+#transition_container {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.2);
+}
+
+#transition_canvas {
+  overflow: hidden;
+  font-size: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background-color: #f5f2f0;
+  margin: auto; /* centered */
+  border: 1em solid #f5f2f0;
+}
+
 
 /* SVG Graph/DAG specifics */
 g.type-TK > rect {
