@@ -25,29 +25,60 @@
           JsonToTeiTransformer: function() {
             this.transform = function( json_string ) {
               var json = JSON.parse( json_string );
+              var label = json['label'];
+              var manifestId = json['@id'];
               var columns = [];
-              var x_val = 0;
+              var last_x = 0;
               json.sequences[0].canvases[0].resources.forEach( function( item ) {
                 if( item.resource['@type'] == 'cnt:ContentAsText' ) {
-                  if( x_val < parseInt( item.on.match( /^.*#xywh=-?(\d+)/ )[1] ) ) {
+                  // Parse the coordinates
+                  coords = item.on.match( /^.*#xywh=(\d+),(\d+),(\d+),(\d+)/ )
+                  // See if we have started a new column
+                  if( last_x < coords[1] ) {
                     columns.push( [] );
-                    x_val = parseInt( item.on.match( /^.*#xywh=-?(\d+)/ )[1] )
+                    last_x = coords[1];
                   };
+                  // Extract the information we need from this item
                   var lineid = item['@id'].match( /^.*line\/(\d+)$/ )[1];
-                  columns[ columns.length - 1 ].push( [ lineid, item.resource['cnt:chars'] ] );
+                  columns[ columns.length - 1 ].push( 
+                  { 'id': lineid, 
+                  	'text': item.resource['cnt:chars'],
+                  	'coordinates': coords
+                  });
                 }
-              } );
-              var xmlstring = '';
+              });
+              var xmltext = '';
+              var xmlfacs = '';
+              // For each column...
               columns.forEach( function( column, cn ) {
-                xmlstring += '<cb n="' + ( cn + 1 ) + '"/>\n';
+              	// add a column break
+                xmltext += '<cb n="' + ( cn + 1 ) + '"/>\n';
+                // then for each line in the column...
                 column.forEach( function( line, ln ) {
-                  xmlstring += '<lb xml:id="l' + line[0] + '" n="' + ( ln  + 1 ) + '"/>' + line[1] + '\n';
-                } );
-              } );
+                  // add the text line
+                  id = line['id'];
+                  text = line['text'];
+                  xmltext += `<lb facs="#l${id}" n="${ln+1}"/>${text}`;
+                  // and the facsimile zone line.
+                  ulx = line['coordinates'][1];
+                  uly = line['coordinates'][2];
+                  lrx = parseInt(line['coordinates'][1]) + parseInt(line['coordinates'][3]);
+                  lry = parseInt(line['coordinates'][2]) + parseInt(line['coordinates'][4]);
+                  xmlfacs += `<zone xml:id="l${id}" ulx="${ulx}" uly="${uly}" lrx = "${lrx}" lry="${lry}"/>`;
+                });
+              });
+              // XML boilerplate
               var stylesheet_decl = '<?xml-stylesheet type="text/xsl" href="resources/tei_demo_doc.xsl"?>';
-              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>DocTitle</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>Source description</p></sourceDesc></fileDesc></teiHeader><text>';
-              var backmatter = '</text></TEI>';
-              var xmlDoc = stylesheet_decl + '\n' + frontmatter+ '<body><ab>' + xmlstring + '</ab></body>' + backmatter;
+              // TEI header with SC label and manifest ID
+              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>' + label + '</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>' + manifestId + '</p></sourceDesc></fileDesc></teiHeader>';
+              // Facsimile element with canvas info
+              var surfacefile = json.sequences[0].canvases[0].label
+              var surfaceheight = json.sequences[0].canvases[0].height
+              var surfacewidth = json.sequences[0].canvases[0].width
+              var facsimile = `<facsimile><surface ulx="0" uly="0" lrx="${surfacewidth}" lry="${surfaceheight}"><graphic url="${surfacefile}"/>${xmlfacs}</surface></facsimile>`;
+              var textel = '<text><body><ab>' + xmltext + '</ab></body></text>';
+              var backmatter = '</TEI>';
+              var xmlDoc = stylesheet_decl + '\n' + frontmatter + '\n' + facsimile + '\n' + textel + '\n' + backmatter;
               return xmlDoc;
             }
           },
