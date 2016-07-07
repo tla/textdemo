@@ -111,10 +111,85 @@
               return xml;
             }
           },
-          TeiToDotTransformer: function() {
-            this.transform = function( tei ) {
-              return "not implemented yet!"
-            }
+          TeiToDotTransformer: function () {
+          	this.transform = function( xml_string ) {
+          	  // Parse the TEI string
+          	  parser = new DOMParser();
+          	  teiDoc = parser.parseFromString( xml_string, "text/xml" );
+          	  var nsres = function( pf ) {
+          	    if( pf === 't' ) {
+          	      return "http://www.tei-c.org/ns/1.0";
+          	    } else if ( pf === 'xml' ) {
+          	      return "http://www.w3.org/XML/1998/namespace";
+          	    } else {
+          	      return "";
+          	    }
+          	  };
+          	  var byXpath = function(path, context) {
+          	    context = context || teiDoc;
+          	  	return teiDoc.evaluate(path, context, nsres,
+          	  		XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+          	  };
+          	  var setByXpath = function(path) {
+          	  	return teiDoc.evaluate(path, teiDoc, nsres,
+          	  		XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+          	  };
+          	  nodes = [];
+          	  edges = [];
+          	  // Make the text node with label and manifest
+          	  nodes.push({
+          	    "id": "TEXT",
+          	    "class": "TEXT",
+          	    "label": byXpath('//t:titleStmt/t:title').textContent,
+          	    "manifestID": byXpath('//t:sourceDesc/t:p').textContent
+          	  });
+          	  // Make the facsimile and zone nodes with coordinates and ID
+          	  nodes.push({
+          	    "id": "facs",
+          	    "class": "FACSIMILE", 
+          	    "url": byXpath('//t:graphic/@url').textContent,
+          	    "height": byXpath('//t:surface/@lry').textContent,
+          	    "width": byXpath('//t:surface/@lrx').textContent
+          	  });
+          	  edges.push(["TEXT", "facs", "HAS_FACSIMILE"]);
+          	  var zones = setByXpath('//t:zone');
+          	  var nextZone = zones.iterateNext();
+          	  while( nextZone ) {
+          	    zwid = parseInt(byXpath('./@lrx', nextZone ).textContent) - parseInt(byXpath('./@ulx', nextZone ).textContent);
+          	    zhgt = parseInt(byXpath('./@lry', nextZone ).textContent) - parseInt(byXpath('./@uly', nextZone ).textContent)
+
+          	  	zoneNode = {
+          	  	  "id": byXpath('./@xml:id', nextZone ).nodeValue,
+          	  	  "x": parseInt(byXpath('./@ulx', nextZone ).textContent),
+          	  	  "y": parseInt(byXpath('./@uly', nextZone ).textContent),
+          	  	  "width": zwid,
+          	  	  "height": zhgt
+          	  	};
+          	  	nodes.push( zoneNode );
+          	  	edges.push(["facs", zoneNode['id'], 'HAS_ZONE']);
+          	  	nextZone = zones.iterateNext();
+          	  }
+          	  // Go through the tokens in the ab in order
+          	  
+          	  // Now output a dot string with the nodes and the edges
+          	  var dotString = 'digraph theText {\n'
+          	  nodes.forEach( function( node, idx ) {
+          	  	var nodeString = '  ' + node.id + ' [ ';
+          	  	Object.keys(node).forEach( function( key ) {
+          	  		if( key != 'id' ) {
+          	  			nodeString += `${key}="${node[key]}" `;
+          	  		}
+          	  	});
+          	  	nodeString += ']';
+          	  	dotString += nodeString + '\n';
+          	  });
+          	  edges.forEach( function( edge ) {
+          	  	var edgeString = `  ${edge[0]} -> ${edge[1]} [ label="${edge[2]}" ]`
+          	  	dotString += edgeString + '\n';
+          	  });
+          	  dotString += '}';
+          	  return dotString;
+          	}
           },
           set_textarea_content: function( textarea_id, content ) {
             var textarea = gEBI( textarea_id );
