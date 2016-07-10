@@ -350,9 +350,16 @@
           				var tnode = gr.node(currToken);
           				var tokenText = '';
           				// Check to see if it has an annotation start
+          				// Quick and dirty functionality to sort by XML nesting needs
+          				var nestedOrder = function( a, b ) {
+          					var anb = gr.neighbors(a);
+          					var bnb = gr.neighbors(b);
+          					return anb.length > bnb.length ? -1 : anb.length < bnb.length; 
+          				};
           				var startTags = gr.neighbors(currToken).filter( function( el ) {
           					return gr.node(el)['class'] === 'ANNOTATION' &&
-          						gr.edge( el, currToken ).name === 'MARKUP' });
+          						gr.edge( el, currToken ).name === 'MARKUP' }).sort(
+          						nestedOrder);
           				startTags.forEach( function( st ) {
           					var tagNode = gr.node(st);
           					var tagStr = `<${tagNode["label"]}`;
