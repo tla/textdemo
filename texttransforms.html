@@ -256,6 +256,7 @@
 						}
 						aidx += 1;
 						var annoRange = stepThroughText( nextEl );
+						createdTokens = createdTokens.concat(annoRange);
 						nodes.push( annoNode );
 						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
 						edges.push([annoNode.id,
@@ -326,9 +327,9 @@
           			var zoneobj = {
           				'@id': `${baseurl}line/${lineid}`,
           				'@type': 'oa:Annotation',
-          				'motivation': 'sc:Painting',
+          				'motivation': 'sc:painting',
           				'resource': { '@type': 'cnt:ContentAsText' },
-          				'on': `${baseurl}canvas/${imgfile}/#xywh=${znode['x']},${znode['y']},${znode['w']},${znode['h']}`
+          				'on': `${baseurl}canvas/${imgfile}#xywh=${znode['x']},${znode['y']},${znode['w']},${znode['h']}`
           			};
           			// Now get the first and last text node for this line.
           			var firstToken = gr.neighbors(z).filter( function( el ) {
@@ -403,8 +404,8 @@
           			'@id': `${baseurl}canvas/${imgfile}`,
           			'@type': "sc:Canvas",
           			'label': imgfile,
-          			'height': facsnode['h'],
-          			'width': facsnode['w'],
+          			'height': parseInt(facsnode['h']),
+          			'width': parseInt(facsnode['w']),
           			'resources': resources
           		}];
           		
@@ -439,7 +440,51 @@
         }
 
         // Code in global name space
+        var original_json;
         gEBI = function( id ) { return document.getElementById( id ) };
+        
+        // Borrowed from StackOverflow
+		objectEquals = function( x, y ) {
+			'use strict';
+
+			if (x === null || x === undefined || y === null || y === undefined) { 
+				if( x != y ) {
+					console.log( `Difference found on ${x} vs ${y}`);
+				}
+				return x === y; 
+			}
+			// after this just checking type of one would be enough
+			if (x.constructor !== y.constructor) { return false; }
+			// if they are functions, they should exactly refer to same one (because of closures)
+			if (x instanceof Function) { return x === y; }
+			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
+			if (x instanceof RegExp) { return x === y; }
+			if (x === y || x.valueOf() === y.valueOf()) { 
+				return true; 
+			}
+			if (Array.isArray(x) && x.length !== y.length) { 
+				console.log( `Difference found on ${x} vs ${y}`);
+				return false; 
+			}
+
+			// if they are dates, they must had equal valueOf
+			if (x instanceof Date) { return false; }
+
+			// if they aren't strictly equal, they both need to be object at least
+			if (!(x instanceof Object)) { 
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false; 
+			}
+			if (!(y instanceof Object)) { 
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false; 
+			}
+
+			// recursive object equality check
+			var p = Object.keys(x);
+			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
+				p.every(function (i) { return objectEquals(x[i], y[i]); });
+		};
 
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
@@ -461,6 +506,7 @@
           // Load JSON source, visualize text from JSON
           var json = new JSON_MODULE();
           json.getExampleJSON( function( json_data ) {
+          	original_json = json_data;
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
             var transformer = new TextTransformers.JsonToHtmlTransformer();
             TextTransformers.set_iframe_content( 'iframe_json', transformer.transform( json_data ) );
@@ -501,10 +547,14 @@
             showTransitionSlide( TextTransformers.DotToJsonTransformer );
             var transformer = new TextTransformers.DotToJsonTransformer()
             gEBI( 'json' ).value = transformer.transform( gEBI( 'dot' ).value );
+            // See if the answers are the same
+            var new_json = JSON.parse( gEBI( 'json' ).value );
+            var is_equivalent = objectEquals( original_json, new_json );
+            console.log("Equality check for JSON returned " + is_equivalent );
             // TODO need to re-display the HTML transform of the old/new JSON
             transformer = new TextTransformers.JsonToHtmlTransformer();
             TextTransformers.set_iframe_content( 'iframe_json', 
-            	transformer.transform( JSON.parse( gEBI( 'json' ).value ) ) );
+            	transformer.transform( new_json ) );
           } );
         };
     </script>
