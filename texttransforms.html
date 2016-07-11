@@ -34,6 +34,8 @@
               var json = JSON.parse( json_string );
               var label = json['label'];
               var manifestId = json['@id'];
+              var resourceURL = manifestId.substr(0,
+              						manifestId.indexOf("manifest") );
               var columns = [];
               var last_x = 0;
               json.sequences[0].canvases[0].resources.forEach( function( item ) {
@@ -77,7 +79,7 @@
               // XML boilerplate
               var stylesheet_decl = '<?xml-stylesheet type="text/xsl" href="resources/tei_demo_doc.xsl"?>';
               // TEI header with SC label and manifest ID
-              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>' + label + '</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>' + manifestId + '</p></sourceDesc></fileDesc></teiHeader>';
+              var frontmatter = '<TEI version="5.0" xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>' + label + '</title></titleStmt><publicationStmt><p>This is a publication statement</p></publicationStmt><sourceDesc><p>' + resourceURL + '</p></sourceDesc></fileDesc></teiHeader>';
               // Facsimile element with canvas info
               var surfacefile = json.sequences[0].canvases[0].label
               var surfaceheight = json.sequences[0].canvases[0].height
@@ -184,8 +186,10 @@
 			  var aidx = 0;
           	  var newLine = false;
           	  var stepThroughText = function( element ) {
-          	  	  var createdTokens = []
-				  element.childNodes.forEach( function( nextEl ) {
+          	  	  var createdTokens = [];
+          	  	  var children = element.childNodes;
+				  for( var i = 0; i < children.length; i++ ) {
+				  	var nextEl = children.item(i);
 					// If it's a lb, note ref for hooking up the correct zone
 					if( nextEl.nodeName === "lb" ) {
 					  // Close out the old line TODO
@@ -246,18 +250,19 @@
 							'class': 'ANNOTATION',
 							'label': nextEl.nodeName
 						};
-						for( var i = 0; i < nextEl.attributes.length; i++ ) {
-							var attr = nextEl.attributes[i];
+						for( var j = 0; j < nextEl.attributes.length; j++ ) {
+							var attr = nextEl.attributes[j];
 							annoNode[attr.nodeName] = attr.nodeValue;
 						}
 						aidx += 1;
 						var annoRange = stepThroughText( nextEl );
+						createdTokens = createdTokens.concat(annoRange);
 						nodes.push( annoNode );
 						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
 						edges.push([annoNode.id,
 									annoRange[annoRange.length-1].id, 'UNTIL']);
 					}
-			  	  });
+			  	  }
 			  	return createdTokens;
 			  };
           	  // Go through the child elements of the ab in order
@@ -268,12 +273,14 @@
           	  // Now output a dot string with the nodes and the edges
           	  var dotString = 'digraph theText {\n'
           	  nodes.forEach( function( node, idx ) {
-          	  	var nodeString = '  ' + node.id + ' [ ';
+          	    var nodeAttrs = [];
           	  	Object.keys(node).forEach( function( key ) {
           	  		if( key != 'id' ) {
-          	  			nodeString += `${key}="${node[key]}" `;
+          	  			nodeAttrs.push(`${key}="${node[key]}"`);
           	  		}
           	  	});
+          	  	var nodeString = '  ' + node.id + ' [ ' ;
+          	  	nodeString += nodeAttrs.join(', ');
           	  	nodeString += ']';
           	  	dotString += nodeString + '\n';
           	  });
@@ -283,6 +290,148 @@
           	  });
           	  dotString += '}';
           	  return dotString;
+          	}
+          },
+          DotToJsonTransformer: function () {
+          	this.transform = function( dot_string ) {
+          		// Parse the dot into a Javascript object
+          		var gr = graphlibDot.read( dot_string );
+          		// Get some main text properties
+          		var textnode = gr.node('TEXT');
+          		var facsnode = gr.node('facs');
+          		
+          		var baseurl = textnode['manifestID'];
+          		var imgfile = facsnode['label'];
+          		
+          		// Make an ordered(!) list of annotation resources
+          		var order = function( a, b ) {
+          			var ax = parseInt( gr.node(a)['x'] );
+          			var ay = parseInt( gr.node(a)['y'] );
+          			var bx = parseInt( gr.node(b)['x'] );
+          			var by = parseInt( gr.node(b)['y'] );
+          			
+          			if( ax != bx ) {
+          				return ax < bx ? -1 : 1;
+          			} else if ( ay != by ) {
+          				return ay < by ? -1 : 1;
+          			}
+          			return 0;
+          		}
+          		var zones = gr.neighbors('facs').filter( function( el ) {
+          			return gr.node(el)['class'] === 'ZONE';
+          		}).sort(order);
+          		var resources = []
+          		zones.forEach( function( z ) {
+          			var znode = gr.node(z);
+          			var lineid = z.substr(1);
+          			var zoneobj = {
+          				'@id': `${baseurl}line/${lineid}`,
+          				'@type': 'oa:Annotation',
+          				'motivation': 'sc:painting',
+          				'resource': { '@type': 'cnt:ContentAsText' },
+          				'on': `${baseurl}canvas/${imgfile}#xywh=${znode['x']},${znode['y']},${znode['w']},${znode['h']}`
+          			};
+          			// Now get the first and last text node for this line.
+          			var firstToken = gr.neighbors(z).filter( function( el ) {
+          				return gr.node(el)['class'] === 'TOKEN' && 
+          					gr.hasEdge(z, el) && gr.edge(z, el).name === 'TRANSCRIPTION';
+          			})[0];
+          			var lastToken = gr.neighbors(z).filter( function( el ) {
+          				return gr.node(el)['class'] === 'TOKEN' && 
+          					gr.hasEdge(z, el) && gr.edge(z, el).name === 'UNTIL';
+          			})[0];
+          			// For each text node, from the first to the last, check the token for
+          			// annotation start and end, and then spit it out.
+          			var stringResult = '';
+          			var currToken = firstToken;
+          			var foundLast = false;
+          			while( !foundLast ) {
+	          			foundLast = currToken === lastToken;
+          				var tnode = gr.node(currToken);
+          				var tokenText = '';
+          				// Check to see if it has an annotation start
+          				// Quick and dirty functionality to sort by XML nesting needs
+          				var nestedOrder = function( a, b ) {
+          					var anb = gr.neighbors(a);
+          					var bnb = gr.neighbors(b);
+          					return anb.length > bnb.length ? -1 : anb.length < bnb.length; 
+          				};
+          				var startTags = gr.neighbors(currToken).filter( function( el ) {
+          					return gr.node(el)['class'] === 'ANNOTATION' &&
+          						gr.edge( el, currToken ).name === 'MARKUP' }).sort(
+          						nestedOrder);
+          				startTags.forEach( function( st ) {
+          					var tagNode = gr.node(st);
+          					var tagStr = `<${tagNode["label"]}`;
+          					var tagAttrs = []
+          					for( var key in tagNode ) {
+          						if( key != 'class' && key != 'label' ) {
+	          						tagAttrs.push(`${key}="${tagNode[key]}"`);
+	          					}
+          					}
+          					if( tagAttrs.length ) {
+          						tagStr += ' ' + tagAttrs.join(' ');
+          					}
+          					tagStr += '>';
+          					tokenText += tagStr;
+          				});
+          				// Spit out the string
+          				tokenText += tnode['label'];
+          				// Check to see if it has an annotation end.
+          				// NOTE: The graphlibDot doesn't handle multiple edges 
+          				// between the same pair of nodes. If the annotation covers
+          				// only one token, we have to check for that.
+          				var endTags = startTags.filter( function( el ) {
+          					return gr.neighbors( el ).length === 1 });
+          				endTags = endTags.concat( gr.neighbors(currToken).filter( function( el ) {
+          					return gr.node(el)['class'] === 'ANNOTATION' &&
+          						gr.edge( el, currToken ).name === 'UNTIL' }) );
+          				endTags.forEach( function( st ) {
+          					var tagNode = gr.node(st);
+          					var tagStr = `</${tagNode["label"]}>`;
+          					tokenText += tagStr;
+          				});
+          				// Spit out a space unless joinNext is true
+          				if( !('joinNext' in tnode) ) {
+          					tokenText += ' ';
+          				}
+          				stringResult += tokenText;
+          				// Advance the token
+          				var nextToken = gr.neighbors(currToken).filter( function(el) { 
+          					return gr.node(el).class === 'TOKEN' && 
+          						gr.hasEdge(currToken, el) && 
+          						gr.edge(currToken, el).name === 'SEQUENCE' })[0];
+          				currToken = nextToken;
+          			}
+          			zoneobj['resource']['cnt:chars'] = stringResult;
+          			resources.push(zoneobj);
+          		});
+          		// Stick those in a canvas
+          		var canvases = [{
+          			'@id': `${baseurl}canvas/${imgfile}`,
+          			'@type': "sc:Canvas",
+          			'label': imgfile,
+          			'height': parseInt(facsnode['h']),
+          			'width': parseInt(facsnode['w']),
+          			'resources': resources
+          		}];
+          		
+          		// Stick that in a sequence
+          		var sequences = [{
+          			'@id': `${baseurl}sequence/normal`,
+          			'@type': "sc:Sequence",
+          			'label': "Current Page Order",
+          			'canvases': canvases
+          		}];
+          		// Wrap the sequence in the outer object
+          		var scjson = {
+          			'@context': 'http://www.shared-canvas.org/ns/context.json',
+          			'@id': baseurl + 'manifest.json',
+          			'@type': "sc:Manifest",
+          			'label': textnode['label'],
+          			'sequences': sequences
+          		};
+          		return JSON.stringify( scjson );
           	}
           },
           set_textarea_content: function( textarea_id, content ) {
@@ -298,7 +447,51 @@
         }
 
         // Code in global name space
+        var original_json;
         gEBI = function( id ) { return document.getElementById( id ) };
+        
+        // Borrowed from StackOverflow
+		objectEquals = function( x, y ) {
+			'use strict';
+
+			if (x === null || x === undefined || y === null || y === undefined) { 
+				if( x != y ) {
+					console.log( `Difference found on ${x} vs ${y}`);
+				}
+				return x === y; 
+			}
+			// after this just checking type of one would be enough
+			if (x.constructor !== y.constructor) { return false; }
+			// if they are functions, they should exactly refer to same one (because of closures)
+			if (x instanceof Function) { return x === y; }
+			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
+			if (x instanceof RegExp) { return x === y; }
+			if (x === y || x.valueOf() === y.valueOf()) { 
+				return true; 
+			}
+			if (Array.isArray(x) && x.length !== y.length) { 
+				console.log( `Difference found on ${x} vs ${y}`);
+				return false; 
+			}
+
+			// if they are dates, they must had equal valueOf
+			if (x instanceof Date) { return false; }
+
+			// if they aren't strictly equal, they both need to be object at least
+			if (!(x instanceof Object)) { 
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false; 
+			}
+			if (!(y instanceof Object)) { 
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false; 
+			}
+
+			// recursive object equality check
+			var p = Object.keys(x);
+			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
+				p.every(function (i) { return objectEquals(x[i], y[i]); });
+		};
 
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
@@ -320,6 +513,7 @@
           // Load JSON source, visualize text from JSON
           var json = new JSON_MODULE();
           json.getExampleJSON( function( json_data ) {
+          	original_json = json_data;
             TextTransformers.set_textarea_content( 'json', JSON.stringify( json_data ) );
             var transformer = new TextTransformers.JsonToHtmlTransformer();
             TextTransformers.set_iframe_content( 'iframe_json', transformer.transform( json_data ) );
@@ -354,10 +548,20 @@
               svg_renderer.render_dot( gEBI( 'dot' ).value, '#svg_graph g' );
             }, 2000 );
           } );
-          // Temporary: just here to prove we can go 'back'
-          gEBI( 'back_to_tei' ).addEventListener( 'click', function() {
-            var left_x = gEBI( 'demo_panel_002' ).offsetLeft;
+          gEBI( 'back_to_json' ).addEventListener( 'click', function() {
+            var left_x = gEBI( 'demo_panel_001' ).offsetLeft;
             scrollToX( left_x, 500, 'easeInOutQuint' );
+            showTransitionSlide( TextTransformers.DotToJsonTransformer );
+            var transformer = new TextTransformers.DotToJsonTransformer()
+            gEBI( 'json' ).value = transformer.transform( gEBI( 'dot' ).value );
+            // See if the answers are the same
+            var new_json = JSON.parse( gEBI( 'json' ).value );
+            var is_equivalent = objectEquals( original_json, new_json );
+            console.log("Equality check for JSON returned " + is_equivalent );
+            // TODO need to re-display the HTML transform of the old/new JSON
+            transformer = new TextTransformers.JsonToHtmlTransformer();
+            TextTransformers.set_iframe_content( 'iframe_json', 
+            	transformer.transform( new_json ) );
           } );
         };
     </script>
@@ -377,7 +581,7 @@
       <div id="demo_panel_003" class="demo_panel">
         <textarea id="dot"></textarea>
         <svg id="svg_graph"></svg>
-        <div id="back_to_tei" class="button">back</div>
+        <div id="back_to_json" class="button">back</div>
       </div>
     </div>
 

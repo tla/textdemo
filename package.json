@@ -1,0 +1,25 @@
+{
+  "name": "textdemo",
+  "version": "1.0.0",
+  "description": "Text conversion demo for DH2016",
+  "main": "server.js",
+  "dependencies": {
+    "connect": "^3.4.1",
+    "serve-static": "^1.11.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tla/textdemo.git"
+  },
+  "author": "Joris van Zundert and Tara L Andrews",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/tla/textdemo/issues"
+  },
+  "homepage": "https://github.com/tla/textdemo#readme"
+}
