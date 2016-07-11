@@ -1,8 +1,8 @@
 var SVG_MODULE = SVG_MODULE || function() {
 
   this.render_dot = function( dot, svg_element_id ) {
-    var g = graphlibDot.read( dot );
-    //var g = graphlibDot.read("digraph { 1; 2; 1 -> 2 [label=\"label\"] }");
+    //var g = graphlibDot.read( dot );
+    var g = graphlibDot.read("digraph { 1; 2; 1 -> 2 [label=\"label\"] }");
     g.nodes().forEach(function(v) {
       var node = g.node(v);
       node.shape = "ellipse";

@@ -81,6 +81,13 @@ iframe {
   border: 1em solid #f5f2f0;
 }
 
+.equivalent {
+  background-color: #d4ffd4;
+}
+
+.not_equivalent {
+  background-color: #ffd4e2;
+}
 
 /* SVG Graph/DAG specifics */
 text {
