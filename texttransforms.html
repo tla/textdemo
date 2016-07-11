@@ -131,14 +131,11 @@
           	  teiDoc = parser.parseFromString( xml_string, "text/xml" );
           	  var byXpath = function(path, context) {
           	    context = context || teiDoc;
-          	  	return teiDoc.evaluate(path, context, nsres,
-          	  		XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+          	  	return teiDoc.evaluate(path, context, nsres, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
           	  };
           	  var setByXpath = function(path) {
-          	  	return teiDoc.evaluate(path, teiDoc, nsres,
-          	  		XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+          	  	return teiDoc.evaluate(path, teiDoc, nsres, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
           	  };
-
           	  // We will make simple objects for each node and edge
           	  nodes = [];
           	  edges = [];
@@ -177,99 +174,95 @@
           	  	edges.push(["facs", zoneNode['id'], 'HAS_ZONE']);
           	  	nextZone = zones.iterateNext();
           	  }
-
           	  // Set up our recursive function for stepping through the
           	  // child elements of a node
-			  var currLine;
-			  var lastToken;
-			  var tidx = 0;
-			  var aidx = 0;
+      			  var currLine;
+      			  var lastToken;
+      			  var tidx = 0;
+      			  var aidx = 0;
           	  var newLine = false;
           	  var stepThroughText = function( element ) {
-          	  	  var createdTokens = [];
-          	  	  var children = element.childNodes;
-				  for( var i = 0; i < children.length; i++ ) {
-				  	var nextEl = children.item(i);
-					// If it's a lb, note ref for hooking up the correct zone
-					if( nextEl.nodeName === "lb" ) {
-					  // Close out the old line TODO
-					  if( lastToken && currLine ) {
-						edges.push([currLine, lastToken.id, 'UNTIL']);
-					  }
-					  // Note the new line
-					  currLine = nextEl.attributes['facs'].nodeValue.substr(1);
-					  newLine = true;
-
-					// If it's text, split it on space
-					} else if( nextEl.nodeType === nextEl.TEXT_NODE ) {
-						var tokens = nextEl.nodeValue.split(/\s+/);
-						var partialWord = true;
-						if( tokens[0] === "" ) {
-							// Remove the joinNext from the last token
-							if( lastToken ) {
-								delete lastToken['joinNext'];
-							}
-							tokens.shift();
-						}
-						if( tokens[tokens.length-1] === "" ) {
-							// See if the last token needs a joinNext
-							partialWord = false;
-							tokens.pop();
-						}
-						// Make the token nodes
-						tokens.forEach( function( token ) {
-							var tnode = {
-								"id": `t${tidx}`,
-								"class": 'TOKEN',
-								"label": token
-							};
-							tidx += 1;
-							nodes.push( tnode );
-							createdTokens.push( tnode );
-							if( lastToken ) {
-							  edges.push([lastToken.id, tnode.id, 'SEQUENCE']);
-							}
-							if( newLine ) {
-							  edges.push([currLine, tnode.id, 'TRANSCRIPTION']);
-							  newLine = false;
-							}
-							lastToken = tnode;
-						});
-						if( partialWord ) {
-							lastToken['joinNext'] = 'true';
-						}
-
-					// If it's a cb, skip it
-					// If it's any element other than cb (which we skip),
-					// get its contents and make an annotation. Need to
-					// recurse on the text splitting for this.
-					} else if ( nextEl.nodeName != "cb" ) {
-						// Make an annotation node
-						var annoNode = {
-							'id': `a${aidx}`,
-							'class': 'ANNOTATION',
-							'label': nextEl.nodeName
-						};
-						for( var j = 0; j < nextEl.attributes.length; j++ ) {
-							var attr = nextEl.attributes[j];
-							annoNode[attr.nodeName] = attr.nodeValue;
-						}
-						aidx += 1;
-						var annoRange = stepThroughText( nextEl );
-						createdTokens = createdTokens.concat(annoRange);
-						nodes.push( annoNode );
-						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
-						edges.push([annoNode.id,
-									annoRange[annoRange.length-1].id, 'UNTIL']);
-					}
-			  	  }
-			  	return createdTokens;
-			  };
+          	  	var createdTokens = [];
+          	  	var children = element.childNodes;
+				        for( var i = 0; i < children.length; i++ ) {
+              		var nextEl = children.item(i);
+              		// If it's a lb, note ref for hooking up the correct zone
+        					if( nextEl.nodeName === "lb" ) {
+        					  // Close out the old line TODO
+        					  if( lastToken && currLine ) {
+        						  edges.push([currLine, lastToken.id, 'UNTIL']);
+        					  }
+        					  // Note the new line
+        					  currLine = nextEl.attributes['facs'].nodeValue.substr(1);
+        					  newLine = true;
+        					// If it's text, split it on space
+        					} else if( nextEl.nodeType === nextEl.TEXT_NODE ) {
+        						var tokens = nextEl.nodeValue.split(/\s+/);
+        						var partialWord = true;
+        						if( tokens[0] === "" ) {
+        							// Remove the joinNext from the last token
+        							if( lastToken ) {
+        								delete lastToken['joinNext'];
+        							}
+        							tokens.shift();
+        						}
+        						if( tokens[tokens.length-1] === "" ) {
+        							// See if the last token needs a joinNext
+        							partialWord = false;
+        							tokens.pop();
+        						}
+        						// Make the token nodes
+        						tokens.forEach( function( token ) {
+        							var tnode = {
+        								"id": `t${tidx}`,
+        								"class": 'TOKEN',
+        								"label": token
+        							};
+        							tidx += 1;
+        							nodes.push( tnode );
+        							createdTokens.push( tnode );
+        							if( lastToken ) {
+        							  edges.push([lastToken.id, tnode.id, 'SEQUENCE']);
+        							}
+        							if( newLine ) {
+        							  edges.push([currLine, tnode.id, 'TRANSCRIPTION']);
+        							  newLine = false;
+        							}
+        							lastToken = tnode;
+        						});
+        						if( partialWord ) {
+        							lastToken['joinNext'] = 'true';
+        						}
+          					// If it's a cb, skip it
+          					// If it's any element other than cb (which we skip),
+          					// get its contents and make an annotation. Need to
+          					// recurse on the text splitting for this.
+              			} else if ( nextEl.nodeName != "cb" ) {
+          						// Make an annotation node
+          						var annoNode = {
+          							'id': `a${aidx}`,
+          							'class': 'ANNOTATION',
+          							'label': nextEl.nodeName
+          						};
+          						for( var j = 0; j < nextEl.attributes.length; j++ ) {
+          							var attr = nextEl.attributes[j];
+          							annoNode[attr.nodeName] = attr.nodeValue;
+          						}
+          						aidx += 1;
+          						var annoRange = stepThroughText( nextEl );
+          						createdTokens = createdTokens.concat(annoRange);
+          						nodes.push( annoNode );
+          						edges.push([annoNode.id, annoRange[0].id, 'MARKUP']);
+          						edges.push([annoNode.id,
+    									annoRange[annoRange.length-1].id, 'UNTIL']);
+          					}
+			  	      }
+			  	      return createdTokens;
+			        };
           	  // Go through the child elements of the ab in order
-			  stepThroughText( byXpath( '//t:ab' ) );
-			  // Hook up the last line ending to the last token
-			  edges.push([currLine, lastToken.id, 'UNTIL']);
-
+			        stepThroughText( byXpath( '//t:ab' ) );
+			        // Hook up the last line ending to the last token
+			        edges.push([currLine, lastToken.id, 'UNTIL']);
           	  // Now output a dot string with the nodes and the edges
           	  var dotString = 'digraph theText {\n'
           	  nodes.forEach( function( node, idx ) {
@@ -279,7 +272,7 @@
           	  			nodeAttrs.push(`${key}="${node[key]}"`);
           	  		}
           	  	});
-          	  	var nodeString = '  ' + node.id + ' [ ' ;
+          	    var nodeString = '  ' + node.id + ' [ ' ;
           	  	nodeString += nodeAttrs.join(', ');
           	  	nodeString += ']';
           	  	dotString += nodeString + '\n';
@@ -451,47 +444,43 @@
         gEBI = function( id ) { return document.getElementById( id ) };
 
         // Borrowed from StackOverflow
-		objectEquals = function( x, y ) {
-			'use strict';
-
-			if (x === null || x === undefined || y === null || y === undefined) {
-				if( x != y ) {
-					console.log( `Difference found on ${x} vs ${y}`);
-				}
-				return x === y;
-			}
-			// after this just checking type of one would be enough
-			if (x.constructor !== y.constructor) { return false; }
-			// if they are functions, they should exactly refer to same one (because of closures)
-			if (x instanceof Function) { return x === y; }
-			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
-			if (x instanceof RegExp) { return x === y; }
-			if (x === y || x.valueOf() === y.valueOf()) {
-				return true;
-			}
-			if (Array.isArray(x) && x.length !== y.length) {
-				console.log( `Difference found on ${x} vs ${y}`);
-				return false;
-			}
-
-			// if they are dates, they must had equal valueOf
-			if (x instanceof Date) { return false; }
-
-			// if they aren't strictly equal, they both need to be object at least
-			if (!(x instanceof Object)) {
-				console.log( `Non-object non-match at ${x} / ${y}` );
-				return false;
-			}
-			if (!(y instanceof Object)) {
-				console.log( `Non-object non-match at ${x} / ${y}` );
-				return false;
-			}
-
-			// recursive object equality check
-			var p = Object.keys(x);
-			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
-				p.every(function (i) { return objectEquals(x[i], y[i]); });
-		};
+    		objectEquals = function( x, y ) {
+    			'use strict';
+    			if (x === null || x === undefined || y === null || y === undefined) {
+    				if( x != y ) {
+    					console.log( `Difference found on ${x} vs ${y}`);
+    				}
+    				return x === y;
+    			}
+    			// after this just checking type of one would be enough
+    			if (x.constructor !== y.constructor) { return false; }
+    			// if they are functions, they should exactly refer to same one (because of closures)
+    			if (x instanceof Function) { return x === y; }
+    			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
+    			if (x instanceof RegExp) { return x === y; }
+    			if (x === y || x.valueOf() === y.valueOf()) {
+    				return true;
+    			}
+    			if (Array.isArray(x) && x.length !== y.length) {
+    				console.log( `Difference found on ${x} vs ${y}`);
+    				return false;
+    			}
+    			// if they are dates, they must had equal valueOf
+    			if (x instanceof Date) { return false; }
+    			// if they aren't strictly equal, they both need to be object at least
+    			if (!(x instanceof Object)) {
+    				console.log( `Non-object non-match at ${x} / ${y}` );
+    				return false;
+    			}
+    			if (!(y instanceof Object)) {
+    				console.log( `Non-object non-match at ${x} / ${y}` );
+    				return false;
+    			}
+    			// recursive object equality check
+    			var p = Object.keys(x);
+    			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
+    				p.every(function (i) { return objectEquals(x[i], y[i]); });
+    		};
 
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
@@ -557,11 +546,10 @@
             // See if the answers are the same
             var new_json = JSON.parse( gEBI( 'json' ).value );
             var is_equivalent = objectEquals( original_json, new_json );
-            console.log("Equality check for JSON returned " + is_equivalent );
+            console.log( "Equality check for JSON returned " + is_equivalent );
             // TODO need to re-display the HTML transform of the old/new JSON
             transformer = new TextTransformers.JsonToHtmlTransformer();
-            TextTransformers.set_iframe_content( 'iframe_json',
-            	transformer.transform( new_json ) );
+            TextTransformers.set_iframe_content( 'iframe_json', transformer.transform( new_json ) );
           } );
         };
     </script>
@@ -581,7 +569,7 @@
       <div id="demo_panel_003" class="demo_panel">
         <textarea id="dot"></textarea>
         <svg id="svg_graph"></svg>
-        <div id="back_to_json" class="button">back</div>
+        <div id="back_to_json" class="button">.dot to json</div>
       </div>
     </div>
 
