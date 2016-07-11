@@ -443,44 +443,45 @@
         var original_json;
         gEBI = function( id ) { return document.getElementById( id ) };
 
-        // Borrowed from StackOverflow
-    		objectEquals = function( x, y ) {
-    			'use strict';
-    			if (x === null || x === undefined || y === null || y === undefined) {
-    				if( x != y ) {
-    					console.log( `Difference found on ${x} vs ${y}`);
-    				}
-    				return x === y;
-    			}
-    			// after this just checking type of one would be enough
-    			if (x.constructor !== y.constructor) { return false; }
-    			// if they are functions, they should exactly refer to same one (because of closures)
-    			if (x instanceof Function) { return x === y; }
-    			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
-    			if (x instanceof RegExp) { return x === y; }
-    			if (x === y || x.valueOf() === y.valueOf()) {
-    				return true;
-    			}
-    			if (Array.isArray(x) && x.length !== y.length) {
-    				console.log( `Difference found on ${x} vs ${y}`);
-    				return false;
-    			}
-    			// if they are dates, they must had equal valueOf
-    			if (x instanceof Date) { return false; }
-    			// if they aren't strictly equal, they both need to be object at least
-    			if (!(x instanceof Object)) {
-    				console.log( `Non-object non-match at ${x} / ${y}` );
-    				return false;
-    			}
-    			if (!(y instanceof Object)) {
-    				console.log( `Non-object non-match at ${x} / ${y}` );
-    				return false;
-    			}
-    			// recursive object equality check
-    			var p = Object.keys(x);
-    			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
-    				p.every(function (i) { return objectEquals(x[i], y[i]); });
-    		};
+        // Borrowed from StackOverflow, c.f.
+        // http://stackoverflow.com/questions/201183/how-to-determine-equality-for-two-javascript-objects
+		objectEquals = function( x, y ) {
+			'use strict';
+			if (x === null || x === undefined || y === null || y === undefined) {
+				if( x != y ) {
+					console.log( `Difference found on ${x} vs ${y}`);
+				}
+				return x === y;
+			}
+			// after this just checking type of one would be enough
+			if (x.constructor !== y.constructor) { return false; }
+			// if they are functions, they should exactly refer to same one (because of closures)
+			if (x instanceof Function) { return x === y; }
+			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
+			if (x instanceof RegExp) { return x === y; }
+			if (x === y || x.valueOf() === y.valueOf()) {
+				return true;
+			}
+			if (Array.isArray(x) && x.length !== y.length) {
+				console.log( `Difference found on ${x} vs ${y}`);
+				return false;
+			}
+			// if they are dates, they must had equal valueOf
+			if (x instanceof Date) { return false; }
+			// if they aren't strictly equal, they both need to be object at least
+			if (!(x instanceof Object)) {
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false;
+			}
+			if (!(y instanceof Object)) {
+				console.log( `Non-object non-match at ${x} / ${y}` );
+				return false;
+			}
+			// recursive object equality check
+			var p = Object.keys(x);
+			return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
+				p.every(function (i) { return objectEquals(x[i], y[i]); });
+		};
 
         window.onload = function() {
           // Next will not work with IE, but I don't care about IE.
