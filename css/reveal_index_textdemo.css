@@ -2,3 +2,52 @@
   width: 1024px;
   height: 658px;
 }
+div.presentation_title {
+  font-family: 'Optima';
+  font-size: 150%;
+  font-weight: bold;
+}
+div.presentation_subtitle {
+  font-family: 'Optima';
+  font-size: 70%;
+  font-weight: bold;
+}
+div.presenter_info_panel {
+  position: relative;
+  top: 4em;
+  left: 1em;
+  font-family: 'Garamond';
+  font-size: 80%;
+  font-weight: normal;
+  text-align: left;
+}
+div.presenter_info div.presenter_meta {
+  width: 40%;
+  display: inline-block;
+  vertical-align: top;
+}
+div.presenter_info div.logo {
+  width: 30%;
+  display: inline-block;
+}
+#logo_huygens img {
+  position: relative;
+  top: -20px;
+}
+div.presenter_affiliation {
+  font-size: 60%;
+  font-style: italic;
+}
+div.presenter_email {
+  font-size: 70%;
+}
+div.attribution {
+  margin-top: 5em;
+  font-size: 30%;
+}
+div.fin {
+  font-family: 'Optima';
+  font-size: 150%;
+  font-weight: normal;
+  font-style: italic;
+}

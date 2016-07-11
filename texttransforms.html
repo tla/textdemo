@@ -299,17 +299,17 @@
           		// Get some main text properties
           		var textnode = gr.node('TEXT');
           		var facsnode = gr.node('facs');
-          		
+
           		var baseurl = textnode['manifestID'];
           		var imgfile = facsnode['label'];
-          		
+
           		// Make an ordered(!) list of annotation resources
           		var order = function( a, b ) {
           			var ax = parseInt( gr.node(a)['x'] );
           			var ay = parseInt( gr.node(a)['y'] );
           			var bx = parseInt( gr.node(b)['x'] );
           			var by = parseInt( gr.node(b)['y'] );
-          			
+
           			if( ax != bx ) {
           				return ax < bx ? -1 : 1;
           			} else if ( ay != by ) {
@@ -333,11 +333,11 @@
           			};
           			// Now get the first and last text node for this line.
           			var firstToken = gr.neighbors(z).filter( function( el ) {
-          				return gr.node(el)['class'] === 'TOKEN' && 
+          				return gr.node(el)['class'] === 'TOKEN' &&
           					gr.hasEdge(z, el) && gr.edge(z, el).name === 'TRANSCRIPTION';
           			})[0];
           			var lastToken = gr.neighbors(z).filter( function( el ) {
-          				return gr.node(el)['class'] === 'TOKEN' && 
+          				return gr.node(el)['class'] === 'TOKEN' &&
           					gr.hasEdge(z, el) && gr.edge(z, el).name === 'UNTIL';
           			})[0];
           			// For each text node, from the first to the last, check the token for
@@ -354,7 +354,7 @@
           				var nestedOrder = function( a, b ) {
           					var anb = gr.neighbors(a);
           					var bnb = gr.neighbors(b);
-          					return anb.length > bnb.length ? -1 : anb.length < bnb.length; 
+          					return anb.length > bnb.length ? -1 : anb.length < bnb.length;
           				};
           				var startTags = gr.neighbors(currToken).filter( function( el ) {
           					return gr.node(el)['class'] === 'ANNOTATION' &&
@@ -378,7 +378,7 @@
           				// Spit out the string
           				tokenText += tnode['label'];
           				// Check to see if it has an annotation end.
-          				// NOTE: The graphlibDot doesn't handle multiple edges 
+          				// NOTE: The graphlibDot doesn't handle multiple edges
           				// between the same pair of nodes. If the annotation covers
           				// only one token, we have to check for that.
           				var endTags = startTags.filter( function( el ) {
@@ -397,9 +397,9 @@
           				}
           				stringResult += tokenText;
           				// Advance the token
-          				var nextToken = gr.neighbors(currToken).filter( function(el) { 
-          					return gr.node(el).class === 'TOKEN' && 
-          						gr.hasEdge(currToken, el) && 
+          				var nextToken = gr.neighbors(currToken).filter( function(el) {
+          					return gr.node(el).class === 'TOKEN' &&
+          						gr.hasEdge(currToken, el) &&
           						gr.edge(currToken, el).name === 'SEQUENCE' })[0];
           				currToken = nextToken;
           			}
@@ -415,7 +415,7 @@
           			'width': parseInt(facsnode['w']),
           			'resources': resources
           		}];
-          		
+
           		// Stick that in a sequence
           		var sequences = [{
           			'@id': `${baseurl}sequence/normal`,
@@ -449,16 +449,16 @@
         // Code in global name space
         var original_json;
         gEBI = function( id ) { return document.getElementById( id ) };
-        
+
         // Borrowed from StackOverflow
 		objectEquals = function( x, y ) {
 			'use strict';
 
-			if (x === null || x === undefined || y === null || y === undefined) { 
+			if (x === null || x === undefined || y === null || y === undefined) {
 				if( x != y ) {
 					console.log( `Difference found on ${x} vs ${y}`);
 				}
-				return x === y; 
+				return x === y;
 			}
 			// after this just checking type of one would be enough
 			if (x.constructor !== y.constructor) { return false; }
@@ -466,25 +466,25 @@
 			if (x instanceof Function) { return x === y; }
 			// if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
 			if (x instanceof RegExp) { return x === y; }
-			if (x === y || x.valueOf() === y.valueOf()) { 
-				return true; 
+			if (x === y || x.valueOf() === y.valueOf()) {
+				return true;
 			}
-			if (Array.isArray(x) && x.length !== y.length) { 
+			if (Array.isArray(x) && x.length !== y.length) {
 				console.log( `Difference found on ${x} vs ${y}`);
-				return false; 
+				return false;
 			}
 
 			// if they are dates, they must had equal valueOf
 			if (x instanceof Date) { return false; }
 
 			// if they aren't strictly equal, they both need to be object at least
-			if (!(x instanceof Object)) { 
+			if (!(x instanceof Object)) {
 				console.log( `Non-object non-match at ${x} / ${y}` );
-				return false; 
+				return false;
 			}
-			if (!(y instanceof Object)) { 
+			if (!(y instanceof Object)) {
 				console.log( `Non-object non-match at ${x} / ${y}` );
-				return false; 
+				return false;
 			}
 
 			// recursive object equality check
@@ -560,7 +560,7 @@
             console.log("Equality check for JSON returned " + is_equivalent );
             // TODO need to re-display the HTML transform of the old/new JSON
             transformer = new TextTransformers.JsonToHtmlTransformer();
-            TextTransformers.set_iframe_content( 'iframe_json', 
+            TextTransformers.set_iframe_content( 'iframe_json',
             	transformer.transform( new_json ) );
           } );
         };
