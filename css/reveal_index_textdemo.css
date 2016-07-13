@@ -59,6 +59,12 @@ div.fin {
   font-weight: normal;
   font-style: italic;
 }
+#text_demo_link {
+  top: -50px;
+  font-family: 'Garamond';
+  font-size: 80%;
+  font-weight: normal;
+}
 #fade_in_image {
   position: absolute;
   z-index: 1;
