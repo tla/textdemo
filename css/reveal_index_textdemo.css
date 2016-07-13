@@ -56,3 +56,22 @@ div.fin {
   font-weight: normal;
   font-style: italic;
 }
+#fade_in_image {
+  position: absolute;
+  z-index: 1;
+  left: 595px;
+}
+.fade_in_image {
+  -webkit-animation: fadeInFromNone 55s ease-out;
+  -moz-animation: fadeInFromNone 55s ease-out;
+  -o-animation: fadeInFromNone 55s ease-out;
+  animation: fadeInFromNone 55s ease-out;
+}
+@keyframes fadeInFromNone {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

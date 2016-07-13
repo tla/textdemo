@@ -140,16 +140,12 @@
 					<h3><a target="_blank" href="https://github.com/tla/textdemo">https://github.com/tla/textdemo</a></h3>
 				</section>
 				<section>
+					<img src="resources/rock.png" width="275" class="fragment fade-in" data-fragment-index="1"/>
 					<img src="resources/nadia_ayari_book.jpg" width="275"/>
-				</section>
-				<section>
-					<img src="resources/nadia_ayari_book.jpg" width="275"/>
-					<img src="resources/rock.png" width="275"/>
-				</section>
-				<section>
-					<img src="resources/nadia_ayari_book.jpg" width="275"/>
-					<img src="resources/rock.png" width="275"/>
-					<img src="resources/javascript_excerpt.png" width="275"/>
+					<span class="fragment fade-in" data-fragment-index="2" name="fade_in_image_container">
+						<img src="resources/scissors.jpeg" width="275"/>
+						<img src="resources/javascript_excerpt.png" width="275" id="fade_in_image"/>
+					</span>
 				</section>
 				<section>
 					<div class="presentation_title">Qu’est-ce qu’un texte numérique?</div>
@@ -196,6 +192,11 @@
 				]
 			});
 			window.onload = function() {
+				Reveal.addEventListener( 'fragmentshown', function( event ) {
+					if( event.fragment.localName == "span" ) {
+						document.getElementById( 'fade_in_image' ).className = 'fade_in_image';
+					}
+				} );
 				var iframe_document;
 				demo_iframe.contentWindow ? iframe_document = demo_iframe.contentWindow.document : iframe_document = demo_iframe.contentDocument;
 				iframe_document.getElementById( 'demo_panels' ).style.height = "640px";
