@@ -22,13 +22,18 @@ div.presenter_info_panel {
   text-align: left;
 }
 div.presenter_info div.presenter_meta {
-  width: 40%;
+  width: 55%;
   display: inline-block;
   vertical-align: top;
 }
 div.presenter_info div.logo {
   width: 30%;
   display: inline-block;
+}
+div.presenter_name img {
+  border: 0px;
+  box-shadow: 0 0 0;
+  margin: 0 0 -7px;
 }
 #logo_huygens img {
   position: relative;
